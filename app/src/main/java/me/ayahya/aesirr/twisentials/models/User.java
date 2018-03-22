@@ -1,11 +1,16 @@
 package me.ayahya.aesirr.twisentials.models;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class User {
     private String
             aviUrl, bannerUrl, createdAt, description,
             email, lang, name, twitterId;
     private int
             followersCount, friendsCount;
+    private Date timestamp;
 
     public User() { } // Needed for Firebase
 
@@ -64,4 +69,8 @@ public class User {
     public int getFriendsCount() { return friendsCount; }
 
     public void setFriendsCount(int friendsCount) { this.friendsCount = friendsCount; }
+
+    @ServerTimestamp
+    public Date getTimestamp() { return timestamp; }
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }
