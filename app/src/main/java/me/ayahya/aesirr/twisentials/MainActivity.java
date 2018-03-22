@@ -11,6 +11,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MobileAds.initialize(this, getString(R.string.mobile_ads_app_id));
+        MobileAds.initialize(this, getString(R.string.mobile_ads_APP_ID));
     }
 }
