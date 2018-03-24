@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "941258753710",
+    "firebase_url": "https://twisential.firebaseio.com",
+    "project_id": "twisential",
+    "storage_bucket": "twisential.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941258753710:android:d861d3d45cf2cf70",
+        "android_client_info": {
+          "package_name": "me.ayahya.aesirr.twisentials"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941258753710-u7t2n05j33ihpqahef27e3cio0tm7sh3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.ayahya.aesirr.twisentials",
+            "certificate_hash": "858de10c8c012cb813eb44713844d86cb448711c"
+          }
+        },
+        {
+          "client_id": "941258753710-f5cl9jdabbj9n6him6m35l2nj39vmmo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI1wa9eM2M2q7i_OqF-0D3Cn6vJ_l5zys"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941258753710-f5cl9jdabbj9n6him6m35l2nj39vmmo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
