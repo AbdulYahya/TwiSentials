@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">TwiSentials</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="loading">Loading…</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+    <string name="auth_failed">Authentication failed</string>
+
+    <!-- Twitter Login -->
+    <string name="label_twitter_login">Firebase + Twitter Login</string>
+    <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
+    <string name="twitter_status_fmt_handle">Signed in as: @%s</string>
+    <string name="twitter_status_fmt_name">Twitter User: %s</string>
+    <string name="twitter_status_fmt_uid">Twitter UID: %l</string>
+    <string name="twitter_title_text">Twitter Login</string>
+
+    <string name="firebaseui_status_fmt">Firebase User: %s</string>
+    <string name="firebaseui_title_text">FirebaseUI Auth</string>
 </resources>
