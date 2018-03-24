@@ -20,4 +20,9 @@
 
     <string name="firebaseui_status_fmt">Firebase User: %s</string>
     <string name="firebaseui_title_text">FirebaseUI Auth</string>
+    <string name="twitter_account_required">Twitter account required*</string>
+    <string name="twisentials_logo">TwiSentials Logo</string>
+    <string name="keep_up_to">Keep up to</string>
+    <string name="twitter_stats">Twitter stats.</string>
+    <string name="date_with_your">date with your</string>
 </resources>
