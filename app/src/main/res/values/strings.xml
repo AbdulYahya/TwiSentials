@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/tools">
     <string name="app_name">TwiSentials</string>
 
     <string name="hint_user_id">User ID</string>
@@ -15,9 +15,18 @@
     <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
     <string name="twitter_status_fmt_handle">Signed in as: @%s</string>
     <string name="twitter_status_fmt_name">Twitter User: %s</string>
+    <!--<value android:integer="twitter_follower_count">%d</value>-->
+    <string name="twitter_follower_count">%s</string>
+    <string name="twitter_following_count">%s</string>
     <string name="twitter_status_fmt_uid">Twitter UID: %l</string>
     <string name="twitter_title_text">Twitter Login</string>
 
     <string name="firebaseui_status_fmt">Firebase User: %s</string>
     <string name="firebaseui_title_text">FirebaseUI Auth</string>
+    <string name="twitter_account_required">Twitter account required*</string>
+    <string name="twisentials_logo">TwiSentials Logo</string>
+    <string name="keep_up_to">Keep up to</string>
+    <string name="twitter_statis">twitter statistics.</string>
+    <string name="date_with_your">date with your</string>
+    <string name="user_pane">User Pane</string>
 </resources>

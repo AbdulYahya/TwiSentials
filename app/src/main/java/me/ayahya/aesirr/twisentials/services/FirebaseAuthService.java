@@ -25,6 +25,8 @@ public class FirebaseAuthService {
 
     public FirebaseAuth getFirebaseAuth() { return firebaseAuth; }
 
+    public FirebaseAuth getFirebaseAuthInstance() { return FirebaseAuth.getInstance(); }
+
     public void handleTwitterSession(Activity activity, TwitterSession session) {
         AuthCredential credential = TwitterAuthProvider.getCredential(
                 session.getAuthToken().token,
@@ -48,7 +50,7 @@ public class FirebaseAuthService {
     }
 
     public void completeSignout() {
-        firebaseAuth.signOut();
+        getFirebaseAuthInstance().signOut();
         TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 }
