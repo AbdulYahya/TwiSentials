@@ -58,9 +58,10 @@
             android:id="@+id/button_twitter_signout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:theme="@style/ThemeOverlay.MyDarkButton"
-            android:text="@string/sign_out"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/sign_out"
+            android:theme="@style/ThemeOverlay.MyDarkButton" />
 
     </RelativeLayout>
 

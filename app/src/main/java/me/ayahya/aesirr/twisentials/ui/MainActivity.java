@@ -6,12 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.ayahya.aesirr.twisentials.R;
+import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.button_twitter_signout) Button twitterSignOutButton;
+    private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
+    private FirebaseAuth firebaseAuth;
+
+    @BindView(R.id.button_twitter_signout)
+    Button twitterSignoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +28,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MobileAds.initialize(this, getString(R.string.mobile_ads_APP_ID));
         ButterKnife.bind(this);
 
-        twitterSignOutButton.setOnClickListener(this);
+        firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
+        twitterSignoutButton.setOnClickListener(this);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser user = firebaseAuthService.getFirebaseAuthInstance().getCurrentUser();
     }
 
+    private void signOut() {
+        firebaseAuthService.completeSignout();
+        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
     @Override
     public void onClick(View v) {
-        if (v == twitterSignOutButton) {
-            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
-            startActivity(intent);
+        if (v == twitterSignoutButton) {
+            signOut();
         }
     }
 }
