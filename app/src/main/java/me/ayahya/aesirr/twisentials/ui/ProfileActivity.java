@@ -1,78 +1,90 @@
 package me.ayahya.aesirr.twisentials.ui;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.AccountService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.ayahya.aesirr.twisentials.CircleTransform;
 import me.ayahya.aesirr.twisentials.R;
-import me.ayahya.aesirr.twisentials.models.User;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.FirestoreService;
 import retrofit2.Call;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String TAG = MainActivity.class.getSimpleName();
+public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = ProfileActivity.class.getSimpleName();
+    private static final int MAX_HEIGHT = 400;
+    private static final int MAX_WIDTH = 400;
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
     private FirebaseAuth firebaseAuth;
 
-    @BindView(R.id.button_twitter_signout)
-    Button twitterSignoutButton;
-    @BindView(R.id.button3) Button profileBtn;
-    @BindView(R.id.follower_count)
-    TextView followerCount;
-    @BindView(R.id.following_count)
-    TextView followingCount;
+    @BindView(R.id.profileBanner)
+    ImageView profileBanner;
+    @BindView(R.id.profileAvi)
+    ImageView profileAvi;
+    @BindView(R.id.twitter_handle)
+    TextView twitterHandle;
+    @BindView(R.id.followersCount)
+    TextView followersCount;
+    @BindView(R.id.friendsCount)
+    TextView friendsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        MobileAds.initialize(this, getString(R.string.mobile_ads_APP_ID));
+        setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
 
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
-        twitterSignoutButton.setOnClickListener(this);
-        profileBtn.setOnClickListener(this);
     }
+
     @Override
     public void onStart() {
         super.onStart();
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService statusDetail = twitterApiClient.getAccountService();
-        Call<com.twitter.sdk.android.core.models.User> call = statusDetail.verifyCredentials(true, true, true);
-        call.enqueue(new Callback<com.twitter.sdk.android.core.models.User>() {
+        Call<User> call = statusDetail.verifyCredentials(true, true, true);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void success(Result<com.twitter.sdk.android.core.models.User> result) {
+            public void success(Result<User> result) {
                 FirebaseFirestore fsDB = firestoreService.getFsDB();
                 DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
 
                 docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        User user = documentSnapshot.toObject(User.class);
-                        followingCount.setText(String.valueOf(user.getFriendsCount()));
-                        followerCount.setText(String.valueOf(user.getFollowersCount()));
+                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot.toObject(me.ayahya.aesirr.twisentials.models.User.class);
+                        Picasso.get().load(user.getAviUrl())
+                                .resize(MAX_WIDTH, MAX_HEIGHT)
+                                .centerCrop()
+                                .transform(new CircleTransform())
+                                .into(profileAvi);
+                        Picasso.get().load(user.getBannerUrl())
+                                .into(profileBanner);
+                        twitterHandle.setText(user.getName());
+                        friendsCount.setText(String.valueOf(user.getFriendsCount()));
+                        followersCount.setText(String.valueOf(user.getFollowersCount()));
+
                     }
                 });
             }
@@ -82,23 +94,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
             }
         });
-
-    }
-
-    private void signOut() {
-        firebaseAuthService.completeSignout();
-        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-    @Override
-    public void onClick(View v) {
-        if (v == twitterSignoutButton) {
-            signOut();
-        } else if (v == profileBtn) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        }
     }
 }

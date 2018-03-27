@@ -46,9 +46,16 @@ public class TwitterService {
         call.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> result) {
+                // Default is '_original' which is too small
+                String biggerImg = result.data.profileImageUrlHttps
+                        .substring(0, result.data.profileImageUrlHttps.length() - 11)
+                        .concat(".jpg");
+                String biggerBanner = result.data.profileBannerUrl
+                        .substring(0, result.data.profileBannerUrl.length())
+                        .concat("/mobile");
                 // New User
                 me.ayahya.aesirr.twisentials.models.User user = new me.ayahya.aesirr.twisentials.models.User(
-                        result.data.profileImageUrl, result.data.profileBannerUrl,
+                        biggerImg,  result.data.profileBannerUrl,
                         result.data.createdAt, result.data.description, result.data.email,
                         result.data.lang, result.data.name, result.data.idStr,
                         result.data.followersCount, result.data.friendsCount);

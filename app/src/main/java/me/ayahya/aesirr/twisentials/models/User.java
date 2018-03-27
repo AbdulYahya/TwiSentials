@@ -29,13 +29,7 @@ public class User {
         this.followersCount = followersCount;
         this.friendsCount = friendsCount;
     }
-//
-//    deleted:    app/src/main/java/me/ayahya/aesirr/twisentials/MainActivity.java
-//	new file:   app/src/main/java/me/ayahya/aesirr/twisentials/services/FirestoreService.java
-//	new file:   app/src/main/java/me/ayahya/aesirr/twisentials/ui/AuthActivity.java
-//	new file:   app/src/main/java/me/ayahya/aesirr/twisentials/ui/MainActivity.java
-//	new file:   app/src/main/res/layout/activity_auth.xml
-    
+
     public String getAviUrl() { return aviUrl; }
 
     public String getBannerUrl() { return bannerUrl; }
