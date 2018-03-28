@@ -2,21 +2,30 @@ package me.ayahya.aesirr.twisentials.models;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 
+@Parcel
 public class User {
-    private String
-            aviUrl, bannerUrl, createdAt, description,
-            email, lang, name, twitterId;
-    private int
-            followersCount, friendsCount;
-    private Date serverTimestamp;
+    String aviUrl;
+    String bannerUrl;
+    String createdAt;
+    String description;
+    String email;
+    String lang;
+    String name;
+    String twitterId;
+    int followersCount;
+    int friendsCount;
+    int favoritesCount;
+    Date serverTimestamp;
 
     public User() { } // Needed for Firebase
 
     public User(String aviUrl, String bannerUrl, String createdAt, String description,
                 String email, String lang, String name, String twitterId,
-                int followersCount, int friendsCount)
+                int followersCount, int friendsCount, int favoritesCount)
     {
         this.aviUrl = aviUrl;
         this.bannerUrl = bannerUrl;
@@ -28,6 +37,7 @@ public class User {
         this.twitterId = twitterId;
         this.followersCount = followersCount;
         this.friendsCount = friendsCount;
+        this.favoritesCount = favoritesCount;
     }
 
     public String getAviUrl() { return aviUrl; }
@@ -49,6 +59,8 @@ public class User {
     public int getFollowersCount() { return followersCount; }
 
     public int getFriendsCount() { return friendsCount; }
+
+    public int getFavoritesCount() { return favoritesCount; }
 
     @ServerTimestamp
     public Date getServerTimestamp() { return serverTimestamp; }

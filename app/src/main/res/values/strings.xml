@@ -35,4 +35,8 @@
     <string name="twitter_avi_imageview_holder">Twitter Avi ImageView Holder</string>
     <string name="profile_banner">Profile Banner</string>
     <string name="profile_avi">Profile Avi</string>
+    <string name="x">X</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

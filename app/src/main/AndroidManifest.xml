@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.MainActivity" />
         <activity
             android:name=".ui.AuthActivity"
             android:theme="@style/NoActionBar">
@@ -21,8 +21,7 @@
         </activity>
         <activity
             android:name=".ui.ProfileActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
+            android:theme="@style/NoActionBar"></activity>
     </application>
 
 </manifest>

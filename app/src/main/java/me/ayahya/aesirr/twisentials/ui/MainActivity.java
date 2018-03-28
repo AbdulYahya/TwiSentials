@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,6 +15,7 @@ import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -24,7 +25,9 @@ import com.twitter.sdk.android.core.services.AccountService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.ayahya.aesirr.twisentials.CircleTransform;
 import me.ayahya.aesirr.twisentials.R;
+import me.ayahya.aesirr.twisentials.fragments.UserProfileFragment;
 import me.ayahya.aesirr.twisentials.models.User;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.FirestoreService;
@@ -32,17 +35,16 @@ import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = MainActivity.class.getSimpleName();
+    private static final int MAX_HEIGHT = 400;
+    private static final int MAX_WIDTH = 400;
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
     private FirebaseAuth firebaseAuth;
 
     @BindView(R.id.button_twitter_signout)
     Button twitterSignoutButton;
-    @BindView(R.id.button3) Button profileBtn;
-    @BindView(R.id.follower_count)
-    TextView followerCount;
-    @BindView(R.id.following_count)
-    TextView followingCount;
+    @BindView(R.id.profileAvi)
+    ImageView profileAvi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
         twitterSignoutButton.setOnClickListener(this);
-        profileBtn.setOnClickListener(this);
+        profileAvi.setOnClickListener(this);
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -71,8 +74,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         User user = documentSnapshot.toObject(User.class);
-                        followingCount.setText(String.valueOf(user.getFriendsCount()));
-                        followerCount.setText(String.valueOf(user.getFollowersCount()));
+                        Picasso.get().load(user.getAviUrl())
+                                .resize(MAX_WIDTH, MAX_HEIGHT)
+                                .centerCrop()
+                                .transform(new CircleTransform())
+                                .into(profileAvi);
                     }
                 });
             }
@@ -82,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
             }
         });
-
     }
 
     private void signOut() {
@@ -96,9 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v == twitterSignoutButton) {
             signOut();
-        } else if (v == profileBtn) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
+        } else if (v == profileAvi) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.your_placeholder, new UserProfileFragment(), "UserProfileFrag")
+                    .commit();
         }
     }
 }
