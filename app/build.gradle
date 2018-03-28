@@ -20,9 +20,7 @@ android {
         }
         buildTypes.each {
             it.resValue('string', 'com.twitter.sdk.android.CONSUMER_KEY', TwitterConsumerKey)
-            it.resValue('string', 'twitter_consumer_key', TwitterConsumerKey)
             it.resValue('string', 'com.twitter.sdk.android.CONSUMER_SECRET', TwitterConsumerSecret)
-            it.resValue('string', 'twitter_consumer_secret', TwitterConsumerSecret)
             it.resValue('string', 'mobile.ads.APP.ID', MobileAdsAppId)
         }
     }
@@ -49,10 +47,11 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
     // Misc
+    implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'org.parceler:parceler-api:1.1.6'
+    annotationProcessor 'org.parceler:parceler:1.1.6'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

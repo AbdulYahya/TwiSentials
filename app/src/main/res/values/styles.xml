@@ -9,10 +9,11 @@
     </style>
 
     <!-- No ActionBar - Login -->
-    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="cardViewStyle">@style/CardView</item>
     </style>
 
     <!-- Dark Buttons -->

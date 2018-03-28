@@ -19,6 +19,7 @@ public class TwitterService {
     private static final String TAG = TwitterService.class.getSimpleName();
     private FirestoreService firestoreService = new FirestoreService();
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
+    private me.ayahya.aesirr.twisentials.models.User currentUser;
 
     public Callback<TwitterSession> setCallback(final Activity activity) {
         return new Callback<TwitterSession>() {
@@ -38,6 +39,9 @@ public class TwitterService {
         };
     }
 
+    public me.ayahya.aesirr.twisentials.models.User getCurrentUser() { return currentUser; }
+    private void setCurrentUser(me.ayahya.aesirr.twisentials.models.User currentUser) { this.currentUser = currentUser; }
+
     public void storeNewUser() {
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService statusService = twitterApiClient.getAccountService();
@@ -46,13 +50,21 @@ public class TwitterService {
         call.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> result) {
+                // Default is '_original' which is too small
+                String biggerImg = result.data.profileImageUrlHttps
+                        .substring(0, result.data.profileImageUrlHttps.length() - 11)
+                        .concat(".jpg");
+                String biggerBanner = result.data.profileBannerUrl
+                        .substring(0, result.data.profileBannerUrl.length())
+                        .concat("/mobile");
                 // New User
-                me.ayahya.aesirr.twisentials.models.User user = new me.ayahya.aesirr.twisentials.models.User(
-                        result.data.profileImageUrl, result.data.profileBannerUrl,
+                currentUser = new me.ayahya.aesirr.twisentials.models.User(
+                        biggerImg,  result.data.profileBannerUrl,
                         result.data.createdAt, result.data.description, result.data.email,
                         result.data.lang, result.data.name, result.data.idStr,
-                        result.data.followersCount, result.data.friendsCount);
-                firestoreService.newUserDocument(user);
+                        result.data.followersCount, result.data.friendsCount, result.data.favouritesCount);
+                firestoreService.newUserDocument(currentUser);
+                setCurrentUser(currentUser);
             }
 
             @Override

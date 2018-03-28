@@ -15,7 +15,6 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.ayahya.aesirr.twisentials.R;
-import me.ayahya.aesirr.twisentials.models.User;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.TwitterService;
 
