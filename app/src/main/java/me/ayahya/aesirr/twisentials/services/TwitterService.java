@@ -56,10 +56,10 @@ public class TwitterService {
                         .concat(".jpg");
                 String biggerBanner = result.data.profileBannerUrl
                         .substring(0, result.data.profileBannerUrl.length())
-                        .concat("/mobile");
+                        .concat("/1500x500");
                 // New User
                 currentUser = new me.ayahya.aesirr.twisentials.models.User(
-                        biggerImg,  result.data.profileBannerUrl,
+                        biggerImg,  biggerBanner,
                         result.data.createdAt, result.data.description, result.data.email,
                         result.data.lang, result.data.name, result.data.idStr,
                         result.data.followersCount, result.data.friendsCount, result.data.favouritesCount);

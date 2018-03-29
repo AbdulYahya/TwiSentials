@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <ImageView
+        android:id="@+id/nav_drawer_user_pic_cover"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_header_height"
+        android:foreground="@drawable/nav_drawer_header_foreground"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_nav_drawer_account_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/nav_drawer_user_profile_avi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.392"
+        app:srcCompat="@drawable/ic_account_circle_white_64dp"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/nav_drawer_user_display_name"
+        style="@style/Body2.White.Primary"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/tools_text_account_information_username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nav_drawer_user_profile_avi" />
+
+    <TextView
+        android:id="@+id/nav_drawer_user_email"
+        style="@style/Body1.White.Primary"
+        android:layout_marginStart="32dp"
+        android:text="@string/tools_text_account_information_email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nav_drawer_user_display_name"
+        app:layout_constraintVertical_bias="0.0" />
+
+</android.support.constraint.ConstraintLayout>
