@@ -27,12 +27,17 @@ exports.firestoreEmail = functions.firestore
                         templateId: '3b0a203a-5cd0-4be2-a2e5-5ec8abb3023b',
                         substitutionWrappers: ['{{', '}}'],
                         substitutions: {
-                            name: user.name
+                            name: user.name,
+                            sender_name: 'TwiSentials',
+                            sender_address: '400 SW 6th Ave',
+                            sender_city: 'Portland',
+                            sender_state: 'Oregon',
+                            sender_zip: '911'
                         }
 
                     };
                     return sgMail.send(msg);
                 })
-                .then(() => console.log('Email sent!'))
+                .then(() => console.log('Email sent to: ', user.email, ' Info: ', user))
                 .catch(err => console.log(err))
     });
