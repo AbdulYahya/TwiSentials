@@ -3,7 +3,6 @@ package me.ayahya.aesirr.twisentials.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -32,6 +31,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.AccountService;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,10 +73,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-
         FirebaseUser currentUser = firebaseAuthService.getFirebaseAuthInstance().getCurrentUser();
-        Log.e(TAG, currentUser.getProviderData().get(1).toString());
-        Log.e(TAG, currentUser.getDisplayName());
         if (currentUser == null) {
             firebaseAuthService.completeSignout();
             Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
@@ -169,8 +166,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.nav_camera:
-                // Handle the camera action
+            case R.id.nav_home:
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.nav_gallery:
                 // Handle the gallery action
@@ -202,8 +202,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                new TweetComposer.Builder(MainActivity.this)
+                        .show();
             }
         });
 

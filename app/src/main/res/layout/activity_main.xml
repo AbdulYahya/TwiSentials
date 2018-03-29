@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
-                    android:textColor="@color/startBlue"
+                    android:textColor="@color/material_gray_500"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
-                    android:textColor="@color/startBlue"
+                    android:textColor="@color/material_gray_500"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
