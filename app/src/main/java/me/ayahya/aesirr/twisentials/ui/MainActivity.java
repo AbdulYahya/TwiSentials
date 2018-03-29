@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.crash.FirebaseCrash;
@@ -44,13 +45,17 @@ import retrofit2.Call;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.fab) FloatingActionButton fab;
 
-    private static final int MAX_WIDTH = 192;
-    private static final int MAX_HEIGHT = 192;
+    private static final int AVI_MAX_WIDTH = 192;
+    private static final int AVI_MAX_HEIGHT = 192;
+    private static final int BANNER_MAX_WIDTH = 400;
+    private static final int BANNER_MAX_HEIGHT = 400;
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
@@ -98,23 +103,35 @@ public class MainActivity extends AppCompatActivity
                 docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        ImageView userAvi = findViewById(R.id.navigation_drawer_user_account_picture_profile);
-                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot.toObject(me.ayahya.aesirr.twisentials.models.User.class);
+                        ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
+                        ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
+                        TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
+                        TextView userEmail = findViewById(R.id.nav_drawer_user_email);
+                        TextView followersCount = findViewById(R.id.followers_count);
+                        TextView friendsCount = findViewById(R.id.friends_count);
+
+                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
+                                .toObject(me.ayahya.aesirr.twisentials.models.User.class);
                         Picasso.get().load(user.getAviUrl())
-                                .resize(MAX_WIDTH, MAX_HEIGHT)
+                                .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
                                 .centerCrop()
                                 .transform(new CircleTransform())
                                 .into(userAvi);
-//                        twitterHandle.setText(user.getName());
-//                        friendsCount.setText(String.valueOf(user.getFriendsCount()));
-//                        followersCount.setText(String.valueOf(user.getFollowersCount()));
+                        Picasso.get().load(user.getBannerUrl())
+                                .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
+                                .centerCrop()
+                                .into(userBanner);
+                        userDisplayName.setText(user.getName());
+                        userEmail.setText(user.getEmail());
+                        friendsCount.setText(String.valueOf(user.getFriendsCount()));
+                        followersCount.setText(String.valueOf(user.getFollowersCount()));
                     }
                 });
             }
 
             @Override
             public void failure(TwitterException exception) {
-//                FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
+                FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
             }
         });
     }
