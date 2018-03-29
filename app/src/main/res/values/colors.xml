@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Main Colors -->
+    <color name="colorPrimary">@color/primary</color>
+    <color name="colorPrimaryDark">@color/primaryDark</color>
+
     <!-- App Main Palette -->
     <color name="primary">@color/blue_500</color>
     <color name="primaryDark">@color/blue_700</color>
+    <color name="colorAccent">#1976D2</color>
     <color name="textPrimary">@color/text_black_primary</color>
 
     <!-- Text -->
     <color name="text_black_primary">@color/black_87</color>
-
     <color name="text_white_primary">@color/white</color>
 
     <!-- Blue -->
@@ -21,18 +25,9 @@
 
     <color name="black_87">#DE000000</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#2f333f</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="whiteOut">#FFFFFF</color>
+
     <color name="grey_100">#f5f5f5</color>
     <color name="grey_300">#E0E0E0</color>
-    <color name="startBlue">#09c6df</color>
-    <color name="endBlue">#0bcce6</color>
-    <color name="bluelight">#49acd5</color>
-    <color name="bluedark">#2f333f</color>
-    <color name="green">#45bc62</color>
-    <color name="orange">#eaad43</color>
 
     <color name="material_deep_purple_50">#EDE7F6</color>
     <color name="material_deep_purple_500">#673AB7</color>
