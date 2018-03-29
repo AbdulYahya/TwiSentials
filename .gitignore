@@ -20,9 +20,6 @@ out/
 
 # Gradle files
 .gradle/
-.gradle
-gradlew
-gradlew.bat
 build/
 
 # Local configuration file (sdk path, etc)
@@ -42,16 +39,19 @@ captures/
 
 # Intellij
 *.iml
-.idea/
+.idea/caches
+.idea/codeStyles
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
 
 # Keystore files
 *.jks
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
-
-# Google Services (e.g. APIs or Firebase)
-google-services.json
 
 # Freeline
 freeline.py

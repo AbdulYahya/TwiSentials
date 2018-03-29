@@ -1,3 +1,49 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/tools">
     <string name="app_name">TwiSentials</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="loading">Loading…</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+    <string name="auth_failed">Authentication failed</string>
+
+    <!-- Twitter Login -->
+    <string name="label_twitter_login">Firebase + Twitter Login</string>
+    <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
+    <string name="twitter_status_fmt_handle">Signed in as: @%s</string>
+    <string name="twitter_status_fmt_name">Twitter User: %s</string>
+    <!--<value android:integer="twitter_follower_count">%d</value>-->
+    <string name="twitter_follower_count">%s</string>
+    <string name="twitter_following_count">%s</string>
+    <string name="twitter_status_fmt_uid">Twitter UID: %l</string>
+    <string name="twitter_title_text">Twitter Login</string>
+
+    <string name="firebaseui_status_fmt">Firebase User: %s</string>
+    <string name="firebaseui_title_text">FirebaseUI Auth</string>
+    <string name="twitter_account_required">Twitter account required*</string>
+    <string name="twisentials_logo">TwiSentials Logo</string>
+    <string name="keep_up_to">Keep up to</string>
+    <string name="twitter_statis">twitter statistics.</string>
+    <string name="date_with_your">date with your</string>
+    <string name="user_pane">User Pane</string>
+    <string name="twitter_handle">Twitter Handle</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="twitter_avi_imageview_holder">Twitter Avi ImageView Holder</string>
+    <string name="profile_banner">Profile Banner</string>
+    <string name="profile_avi">Profile Avi</string>
+    <string name="x">X</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>
