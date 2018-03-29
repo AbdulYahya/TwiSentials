@@ -35,10 +35,11 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.ayahya.aesirr.twisentials.CircleTransform;
+import me.ayahya.aesirr.twisentials.utils.CircleTransform;
 import me.ayahya.aesirr.twisentials.R;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.FirestoreService;
+import me.ayahya.aesirr.twisentials.utils.SharedPrefs;
 import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
+    private SharedPrefs sharedPrefs;
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
+        sharedPrefs = SharedPrefs.newInstance(getApplicationContext());
         initNavDrawer();
     }
 
@@ -103,12 +106,16 @@ public class MainActivity extends AppCompatActivity
 
                             me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
                                     .toObject(me.ayahya.aesirr.twisentials.models.User.class);
-                            Picasso.get().load(user.getAviUrl())
+
+                            sharedPrefs.setImagePath("userAvi", user.getAviUrl());
+                            sharedPrefs.setImagePath("userBanner", user.getBannerUrl());
+
+                            Picasso.get().load(sharedPrefs.getImagePath("userAvi"))
                                     .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
                                     .centerCrop()
                                     .transform(new CircleTransform())
                                     .into(userAvi);
-                            Picasso.get().load(user.getBannerUrl())
+                            Picasso.get().load(sharedPrefs.getImagePath("userBanner"))
                                     .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
                                     .centerCrop()
                                     .into(userBanner);
