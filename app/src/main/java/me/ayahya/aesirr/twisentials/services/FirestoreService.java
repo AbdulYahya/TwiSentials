@@ -1,5 +1,7 @@
 package me.ayahya.aesirr.twisentials.services;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import me.ayahya.aesirr.twisentials.models.User;
 
