@@ -3,6 +3,8 @@
 thumbs.db           # WIN
 desktop.ini         # WIN
 
+node_modules/
+app/functions/node_modules/
 # Built application files
 *.apk
 *.ap_

@@ -1,8 +1,6 @@
 package me.ayahya.aesirr.twisentials.ui;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,10 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
-
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,74 +66,71 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
+        firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
         initNavDrawer();
     }
 
-    private void initNavDrawer() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(this);
-    }
     @Override
     public void onStart() {
         super.onStart();
-        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-        AccountService statusDetail = twitterApiClient.getAccountService();
 
-        Call<User> call = statusDetail.verifyCredentials(true, true, true);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void success(Result<User> result) {
-                FirebaseFirestore fsDB = firestoreService.getFsDB();
-                DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
+        FirebaseUser currentUser = firebaseAuthService.getFirebaseAuthInstance().getCurrentUser();
+        Log.e(TAG, currentUser.getProviderData().get(1).toString());
+        Log.e(TAG, currentUser.getDisplayName());
+        if (currentUser == null) {
+            firebaseAuthService.completeSignout();
+            Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
+            authIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(authIntent);
+            finish();
+        } else {
+            TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+            AccountService statusDetail = twitterApiClient.getAccountService();
 
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
-                        ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
-                        TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
-                        TextView userEmail = findViewById(R.id.nav_drawer_user_email);
-                        TextView followersCount = findViewById(R.id.followers_count);
-                        TextView friendsCount = findViewById(R.id.friends_count);
+            Call<User> call = statusDetail.verifyCredentials(true, true, true);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void success(Result<User> result) {
+                    FirebaseFirestore fsDB = firestoreService.getFsDB();
+                    DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
 
-                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
-                                .toObject(me.ayahya.aesirr.twisentials.models.User.class);
-                        Picasso.get().load(user.getAviUrl())
-                                .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
-                                .centerCrop()
-                                .transform(new CircleTransform())
-                                .into(userAvi);
-                        Picasso.get().load(user.getBannerUrl())
-                                .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
-                                .centerCrop()
-                                .into(userBanner);
-                        userDisplayName.setText(user.getName());
-                        userEmail.setText(user.getEmail());
-                        friendsCount.setText(String.valueOf(user.getFriendsCount()));
-                        followersCount.setText(String.valueOf(user.getFollowersCount()));
-                    }
-                });
-            }
+                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
+                            ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
+                            TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
+                            TextView userEmail = findViewById(R.id.nav_drawer_user_email);
+                            TextView followersCount = findViewById(R.id.followers_count);
+                            TextView friendsCount = findViewById(R.id.friends_count);
 
-            @Override
-            public void failure(TwitterException exception) {
-                FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
-            }
-        });
+                            me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
+                                    .toObject(me.ayahya.aesirr.twisentials.models.User.class);
+                            Picasso.get().load(user.getAviUrl())
+                                    .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
+                                    .centerCrop()
+                                    .transform(new CircleTransform())
+                                    .into(userAvi);
+                            Picasso.get().load(user.getBannerUrl())
+                                    .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
+                                    .centerCrop()
+                                    .into(userBanner);
+                            userDisplayName.setText(user.getName());
+                            userEmail.setText(user.getEmail());
+                            friendsCount.setText(String.valueOf(user.getFriendsCount()));
+                            followersCount.setText(String.valueOf(user.getFollowersCount()));
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
+                }
+            });
+        }
     }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -200,5 +196,22 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void initNavDrawer() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }
