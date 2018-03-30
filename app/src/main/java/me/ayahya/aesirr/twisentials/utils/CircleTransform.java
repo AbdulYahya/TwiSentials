@@ -1,4 +1,4 @@
-package me.ayahya.aesirr.twisentials;
+package me.ayahya.aesirr.twisentials.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

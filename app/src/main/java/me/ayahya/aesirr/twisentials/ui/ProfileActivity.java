@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,7 +23,7 @@ import com.twitter.sdk.android.core.services.AccountService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.ayahya.aesirr.twisentials.CircleTransform;
+import me.ayahya.aesirr.twisentials.utils.CircleTransform;
 import me.ayahya.aesirr.twisentials.R;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.FirestoreService;
