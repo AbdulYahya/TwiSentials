@@ -45,13 +45,12 @@ public class TwitterService {
     public void storeNewUser() {
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService statusService = twitterApiClient.getAccountService();
-
         Call<User> call = statusService.verifyCredentials(true, true, true);
         call.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> result) {
                 // Default is '_original' which is too small
-                String biggerImg = result.data.profileImageUrlHttps
+                String biggerAvi = result.data.profileImageUrlHttps
                         .substring(0, result.data.profileImageUrlHttps.length() - 11)
                         .concat(".jpg");
                 String biggerBanner = result.data.profileBannerUrl
@@ -59,7 +58,7 @@ public class TwitterService {
                         .concat("/1500x500");
                 // New User
                 currentUser = new me.ayahya.aesirr.twisentials.models.User(
-                        biggerImg,  biggerBanner,
+                        biggerAvi,  biggerBanner,
                         result.data.createdAt, result.data.description, result.data.email,
                         result.data.lang, result.data.name, result.data.idStr,
                         result.data.followersCount, result.data.friendsCount, result.data.favouritesCount);

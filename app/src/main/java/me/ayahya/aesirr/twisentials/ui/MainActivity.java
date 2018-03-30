@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
+
     private SharedPrefs sharedPrefs;
     private FirebaseAuth firebaseAuth;
 
@@ -67,16 +68,21 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
+
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
         sharedPrefs = SharedPrefs.newInstance(getApplicationContext());
+
         initNavDrawer();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = firebaseAuthService.getFirebaseAuthInstance().getCurrentUser();
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
         if (currentUser == null) {
             firebaseAuthService.completeSignout();
             Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
@@ -88,6 +94,7 @@ public class MainActivity extends AppCompatActivity
             AccountService statusDetail = twitterApiClient.getAccountService();
 
             Call<User> call = statusDetail.verifyCredentials(true, true, true);
+
             call.enqueue(new Callback<User>() {
                 @Override
                 public void success(Result<User> result) {
@@ -104,12 +111,15 @@ public class MainActivity extends AppCompatActivity
                             TextView followersCount = findViewById(R.id.followers_count);
                             TextView friendsCount = findViewById(R.id.friends_count);
 
-                            me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
-                                    .toObject(me.ayahya.aesirr.twisentials.models.User.class);
+                            me.ayahya.aesirr.twisentials.models.User currentUser =
+                                    documentSnapshot.toObject(me.ayahya.aesirr.twisentials.models.User.class);
 
-                            sharedPrefs.setImagePath("userAvi", user.getAviUrl());
-                            sharedPrefs.setImagePath("userBanner", user.getBannerUrl());
+                            // Set shared Preferences
+                            setSharedPrefs(currentUser.getAviUrl(), currentUser.getBannerUrl(), currentUser.getName(),
+                                    currentUser.getEmail(), String.valueOf(currentUser.getFavoritesCount()),
+                                    String.valueOf(currentUser.getFollowersCount()), String.valueOf(currentUser.getFriendsCount()));
 
+                            // Load shared Preferences rather than making an API call every time the following data is required
                             Picasso.get().load(sharedPrefs.getImagePath("userAvi"))
                                     .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
                                     .centerCrop()
@@ -119,10 +129,10 @@ public class MainActivity extends AppCompatActivity
                                     .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
                                     .centerCrop()
                                     .into(userBanner);
-                            userDisplayName.setText(user.getName());
-                            userEmail.setText(user.getEmail());
-                            friendsCount.setText(String.valueOf(user.getFriendsCount()));
-                            followersCount.setText(String.valueOf(user.getFollowersCount()));
+                            userDisplayName.setText(sharedPrefs.getUserName());
+                            userEmail.setText(sharedPrefs.getUserEmail());
+                            friendsCount.setText(sharedPrefs.getFriendsCount());
+                            followersCount.setText(sharedPrefs.getFollowersCount());
                         }
                     });
                 }
@@ -220,5 +230,16 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setSharedPrefs(String userAvi, String userBanner, String userName,
+                                String userEmail, String favoritesCount, String followersCount, String friendsCount ) {
+        sharedPrefs.setImagePath("userAvi", userAvi);
+        sharedPrefs.setImagePath("userBanner", userBanner);
+        sharedPrefs.setUserName(userName);
+        sharedPrefs.setUserEmail(userEmail);
+        sharedPrefs.setFavoritesCount(favoritesCount);
+        sharedPrefs.setFollowersCount(followersCount);
+        sharedPrefs.setFriendsCount(friendsCount);
     }
 }

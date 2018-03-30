@@ -18,10 +18,11 @@ import me.ayahya.aesirr.twisentials.R;
 import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
 import me.ayahya.aesirr.twisentials.services.TwitterService;
 
-public class AuthActivity extends AppCompatActivity implements View.OnClickListener {
+public class AuthActivity extends AppCompatActivity {
     private TwitterService twitterService = new TwitterService();
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirebaseAuth firebaseAuth = firebaseAuthService.getFirebaseAuth();
+
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @BindView(R.id.button_twitter_login)
@@ -35,25 +36,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
 
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
+
         authStateListener();
         twitterLoginButton.setCallback(twitterService.setCallback(AuthActivity.this));
-    }
-    private void authStateListener() {
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuthService.getFirebaseAuth().getCurrentUser();
-                if (user != null) {
-                    String welcome = "Welcome, " + user.getDisplayName() + "!";
-                    Toast.makeText(AuthActivity.this, welcome, Toast.LENGTH_LONG)
-                            .show();
-                    Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        };
     }
 
     @Override
@@ -73,14 +58,27 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Pass the activity result to the Twitter login button.
+
         twitterLoginButton.onActivityResult(requestCode, resultCode, data);
         twitterLoginButton.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onClick(View v) {
-
+    private void authStateListener() {
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                final FirebaseUser user = firebaseAuthService.getFirebaseAuth().getCurrentUser();
+                if (user != null) {
+                    String welcome = "Welcome, " + user.getDisplayName() + "!";
+                    Toast.makeText(AuthActivity.this, welcome, Toast.LENGTH_LONG)
+                            .show();
+                    Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
     }
 }
 
