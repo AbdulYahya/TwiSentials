@@ -15,6 +15,7 @@ public class User {
     String email;
     String lang;
     String name;
+    String screenName;
     String twitterId;
     int followersCount;
     int friendsCount;
@@ -24,7 +25,7 @@ public class User {
     public User() { } // Needed for Firebase
 
     public User(String aviUrl, String bannerUrl, String createdAt, String description,
-                String email, String lang, String name, String twitterId,
+                String email, String lang, String name, String screenName, String twitterId,
                 int followersCount, int friendsCount, int favoritesCount)
     {
         this.aviUrl = aviUrl;
@@ -34,6 +35,7 @@ public class User {
         this.email = email;
         this.lang = lang;
         this.name = name;
+        this.screenName = screenName;
         this.twitterId = twitterId;
         this.followersCount = followersCount;
         this.friendsCount = friendsCount;
@@ -53,6 +55,8 @@ public class User {
     public String getLang() { return lang; }
 
     public String getName() { return name; }
+
+    public String getScreenName() { return screenName; }
 
     public String getTwitterId() { return twitterId; }
 

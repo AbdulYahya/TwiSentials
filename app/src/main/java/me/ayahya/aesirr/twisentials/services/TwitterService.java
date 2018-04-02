@@ -10,8 +10,10 @@ import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.internal.TwitterApi;
 import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.AccountService;
+import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
 import retrofit2.Call;
 
@@ -45,7 +47,6 @@ public class TwitterService {
     public void storeNewUser() {
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService statusService = twitterApiClient.getAccountService();
-
         Call<User> call = statusService.verifyCredentials(true, true, true);
         call.enqueue(new Callback<User>() {
             @Override
@@ -61,7 +62,7 @@ public class TwitterService {
                 currentUser = new me.ayahya.aesirr.twisentials.models.User(
                         biggerImg,  biggerBanner,
                         result.data.createdAt, result.data.description, result.data.email,
-                        result.data.lang, result.data.name, result.data.idStr,
+                        result.data.lang, result.data.name, result.data.screenName,  result.data.idStr,
                         result.data.followersCount, result.data.friendsCount, result.data.favouritesCount);
                 firestoreService.newUserDocument(currentUser);
                 setCurrentUser(currentUser);

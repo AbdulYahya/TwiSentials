@@ -103,12 +103,12 @@ public class MainActivity extends AppCompatActivity
 
                             me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
                                     .toObject(me.ayahya.aesirr.twisentials.models.User.class);
-                            Picasso.get().load(user.getAviUrl())
+                            Picasso.with(getApplicationContext()).load(user.getAviUrl())
                                     .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
                                     .centerCrop()
                                     .transform(new CircleTransform())
                                     .into(userAvi);
-                            Picasso.get().load(user.getBannerUrl())
+                            Picasso.with(getApplicationContext()).load(user.getBannerUrl())
                                     .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
                                     .centerCrop()
                                     .into(userBanner);
@@ -167,13 +167,16 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_home:
-                Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                Intent homeIntent = new Intent(MainActivity.this, MainActivity.class);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(homeIntent);
                 finish();
                 break;
-            case R.id.nav_gallery:
-                // Handle the gallery action
+            case R.id.nav_timeline:
+                Intent timelineIntent = new Intent(MainActivity.this, TimelineActivity.class);
+                timelineIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(timelineIntent);
+                finish();
                 break;
             case R.id.nav_slideshow:
                 // Handle the slideshow action

@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     // Misc
     implementation 'com.android.support:support-v4:27.1.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.parceler:parceler-api:1.1.6'
     annotationProcessor 'org.parceler:parceler:1.1.6'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

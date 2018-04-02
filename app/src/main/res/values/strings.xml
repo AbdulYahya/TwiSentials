@@ -49,6 +49,7 @@
 
     <!-- Toolbar titles -->
     <string name="toolbar_title_home">Home</string>
+    <string name="toolbar_title_timeline">Timeline</string>
     <string name="toolbar_title_explore">Explore</string>
     <string name="toolbar_title_about">About</string>
     <string name="toolbar_title_account">Account</string>
