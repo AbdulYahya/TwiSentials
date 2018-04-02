@@ -24,6 +24,14 @@ public class SharedPrefs {
                 .apply();
     }
 
+    public String getUserId() { return sharedPreferences.getString("userId", null); }
+
+    public void setUserId(String userId) {
+        sharedPreferences.edit()
+                .putString("userId", userId)
+                .apply();
+    }
+
     public String getUserName() { return sharedPreferences.getString("userName", null); }
 
     public void setUserName(String userName) {

@@ -1,27 +1,32 @@
 package me.ayahya.aesirr.twisentials.ui;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.FrameLayout;
 
 import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.ayahya.aesirr.twisentials.R;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends BaseActivity {
+    @BindView(R.id.timeline_recycler_v) @Nullable RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+        super.addContentView(R.layout.activity_timeline);
+        ButterKnife.bind(this);
 
-        final RecyclerView recyclerView = findViewById(R.id.timeline_recycler_view);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(TimelineActivity.this));
 
         final UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName("twitterdev")
+                .screenName("abdul_jt")
                 .build();
 
         final TweetTimelineRecyclerViewAdapter adapter =
