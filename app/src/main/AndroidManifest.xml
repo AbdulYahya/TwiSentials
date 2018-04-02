@@ -22,8 +22,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ProfileActivity"
+            android:name=".ui.TimelineActivity"
             android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".ui.BaseActivity"
+            android:label="@string/title_activity_base"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
