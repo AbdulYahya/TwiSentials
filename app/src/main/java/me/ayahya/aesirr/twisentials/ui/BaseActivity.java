@@ -2,6 +2,7 @@ package me.ayahya.aesirr.twisentials.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +37,8 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.AccountService;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,36 +95,33 @@ public class BaseActivity extends AppCompatActivity
                     FirebaseFirestore fsDB = firestoreService.getFsDB();
                     DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
 
-                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
-                            ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
-                            TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
-                            TextView userEmail = findViewById(R.id.nav_drawer_user_email);
-                            TextView followersCount = findViewById(R.id.followers_count);
-                            TextView friendsCount = findViewById(R.id.friends_count);
+                    docRef.get().addOnSuccessListener(documentSnapshot -> {
+                        ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
+                        ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
+                        TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
+                        TextView userEmail = findViewById(R.id.nav_drawer_user_email);
 
+                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
+                                .toObject(me.ayahya.aesirr.twisentials.models.User.class);
 
-                            me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
-                                    .toObject(me.ayahya.aesirr.twisentials.models.User.class);
+                        setSharedPrefs(user.getAviUrl(), user.getBannerUrl(), user.getTwitterId(),
+                                user.getName(), user.getEmail(), String.valueOf(user.getFavoritesCount()),
+                                String.valueOf(user.getFollowers().get("count")),
+                                String.valueOf(user.getFriends().get("count")),
+                                String.valueOf(user.getFollowers().get("color")),
+                                String.valueOf(user.getFriends().get("color")));
 
-                            setSharedPrefs(user.getAviUrl(), user.getBannerUrl(), user.getTwitterId(),
-                                    user.getName(), user.getEmail(), String.valueOf(user.getFavoritesCount()),
-                                    String.valueOf(user.getFollowersCount()), String.valueOf(user.getFriendsCount()));
-
-                            Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userAvi"))
-                                    .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
-                                    .centerCrop()
-                                    .transform(new CircleTransform())
-                                    .into(userAvi);
-                            Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userBanner"))
-                                    .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
-                                    .centerCrop()
-                                    .into(userBanner);
-                            userDisplayName.setText(sharedPrefs.getUserName());
-                            userEmail.setText(sharedPrefs.getUserEmail());
-                        }
+                        Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userAvi"))
+                                .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
+                                .centerCrop()
+                                .transform(new CircleTransform())
+                                .into(userAvi);
+                        Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userBanner"))
+                                .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
+                                .centerCrop()
+                                .into(userBanner);
+                        userDisplayName.setText(sharedPrefs.getUserName());
+                        userEmail.setText(sharedPrefs.getUserEmail());
                     });
                 }
 
@@ -132,7 +132,6 @@ public class BaseActivity extends AppCompatActivity
             });
         }
     }
-
 
     @Override
     public void onBackPressed() {
@@ -235,14 +234,17 @@ public class BaseActivity extends AppCompatActivity
 
     private void setSharedPrefs(String userAvi, String userBanner, String userId,
                                 String userName, String userEmail, String favoritesCount,
-                                String followersCount, String friendsCount ) {
+                                String followersCount, String friendsCount,
+                                String followersColor, String friendsColor) {
         sharedPrefs.setImagePath("userAvi", userAvi);
         sharedPrefs.setImagePath("userBanner", userBanner);
         sharedPrefs.setUserId(userId);
         sharedPrefs.setUserName(userName);
         sharedPrefs.setUserEmail(userEmail);
         sharedPrefs.setFavoritesCount(favoritesCount);
+        sharedPrefs.setFollowersColor(followersColor);
         sharedPrefs.setFollowersCount(followersCount);
+        sharedPrefs.setFriendsColor(friendsColor);
         sharedPrefs.setFriendsCount(friendsCount);
     }
 

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import org.parceler.Parcel;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @Parcel
 public class User {
@@ -17,16 +18,17 @@ public class User {
     String name;
     String screenName;
     String twitterId;
-    int followersCount;
-    int friendsCount;
     int favoritesCount;
+
+    HashMap<String, Object> followers = new HashMap<>();
+    HashMap<String, Object> friends = new HashMap<>();
     Date serverTimestamp;
 
     public User() { } // Needed for Firebase
 
     public User(String aviUrl, String bannerUrl, String createdAt, String description,
                 String email, String lang, String name, String screenName, String twitterId,
-                int followersCount, int friendsCount, int favoritesCount)
+                HashMap<String, Object> followers, HashMap<String, Object> friends, int favoritesCount)
     {
         this.aviUrl = aviUrl;
         this.bannerUrl = bannerUrl;
@@ -37,8 +39,8 @@ public class User {
         this.name = name;
         this.screenName = screenName;
         this.twitterId = twitterId;
-        this.followersCount = followersCount;
-        this.friendsCount = friendsCount;
+        this.followers = followers;
+        this.friends = friends;
         this.favoritesCount = favoritesCount;
     }
 
@@ -52,6 +54,10 @@ public class User {
 
     public String getEmail() { return email; }
 
+    public HashMap<String, Object> getFollowers() { return followers; }
+
+    public HashMap<String, Object> getFriends() { return friends; }
+
     public String getLang() { return lang; }
 
     public String getName() { return name; }
@@ -59,10 +65,6 @@ public class User {
     public String getScreenName() { return screenName; }
 
     public String getTwitterId() { return twitterId; }
-
-    public int getFollowersCount() { return followersCount; }
-
-    public int getFriendsCount() { return friendsCount; }
 
     public int getFavoritesCount() { return favoritesCount; }
 

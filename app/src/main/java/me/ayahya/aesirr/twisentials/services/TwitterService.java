@@ -13,12 +13,17 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.AccountService;
 
+import java.util.HashMap;
+
 import retrofit2.Call;
 
 public class TwitterService {
     private static final String TAG = TwitterService.class.getSimpleName();
     private FirestoreService firestoreService = new FirestoreService();
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
+
+    private HashMap<String, Object> followers = new HashMap<>();
+    private HashMap<String, Object> friends = new HashMap<>();
 
     public Callback<TwitterSession> setCallback(final Activity activity) {
         return new Callback<TwitterSession>() {
@@ -52,13 +57,19 @@ public class TwitterService {
                 String biggerBanner = result.data.profileBannerUrl
                         .substring(0, result.data.profileBannerUrl.length())
                         .concat("/1500x500");
+
+                followers.put("color", "#9e9e9e");
+                followers.put("count", String.valueOf(result.data.followersCount));
+                friends.put("color", "#9e9e9e");
+                friends.put("count", String.valueOf(result.data.friendsCount));
+
                 // New User
                 me.ayahya.aesirr.twisentials.models.User currentUser =
                         new me.ayahya.aesirr.twisentials.models.User(
                                 biggerAvi,  biggerBanner, result.data.createdAt,
                                 result.data.description, result.data.email, result.data.lang,
                                 result.data.name, result.data.screenName,  result.data.idStr,
-                                result.data.followersCount, result.data.friendsCount, result.data.favouritesCount);
+                                followers, friends, result.data.favouritesCount);
                 firestoreService.newUserDocument(currentUser);
             }
 

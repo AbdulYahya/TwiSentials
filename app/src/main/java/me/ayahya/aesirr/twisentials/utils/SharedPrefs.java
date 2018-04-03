@@ -55,12 +55,27 @@ public class SharedPrefs {
                 .putString("favoritesCount", favoritesCount)
                 .apply();
     }
+    public String getFollowersColor() { return sharedPreferences.getString("followersColor", null); }
+
+    public void setFollowersColor(String followersColor) {
+        sharedPreferences.edit()
+                .putString("followersColor", followersColor)
+                .apply();
+    }
 
     public String getFollowersCount() { return sharedPreferences.getString("followersCount", null); }
 
     public void setFollowersCount(String followersCount) {
         sharedPreferences.edit()
                 .putString("followersCount", followersCount)
+                .apply();
+    }
+
+    public String getFriendsColor() { return sharedPreferences.getString("friendsColor", null); }
+
+    public void setFriendsColor(String friendsColor) {
+        sharedPreferences.edit()
+                .putString("friendsColor", friendsColor)
                 .apply();
     }
 
