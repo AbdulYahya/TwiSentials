@@ -33,18 +33,15 @@ public class FirebaseAuthService {
                 session.getAuthToken().secret);
 
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseCrash.logcat(Log.DEBUG, TAG, "signInWithCredential:success");
-                            // updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            FirebaseCrash.logcat(Log.WARN, TAG, "signInWithCredential:failure " + task.getException());
-                            FirebaseCrash.report(task.getException());
-                        }
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        FirebaseCrash.logcat(Log.DEBUG, TAG, "signInWithCredential:success");
+                        // updateUI(user);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        FirebaseCrash.logcat(Log.WARN, TAG, "signInWithCredential:failure " + task.getException());
+                        FirebaseCrash.report(task.getException());
                     }
                 });
     }

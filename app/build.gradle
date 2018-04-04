@@ -41,16 +41,16 @@ dependencies {
     implementation 'com.android.support:percent:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     // Firebase SDK's
-    implementation 'com.google.firebase:firebase-ads:12.0.0'
-    implementation 'com.google.firebase:firebase-auth:12.0.0'
-    implementation 'com.google.firebase:firebase-core:12.0.0'
-    implementation 'com.google.firebase:firebase-crash:12.0.0'
-    implementation 'com.google.firebase:firebase-firestore:12.0.0'
+    implementation 'com.google.firebase:firebase-ads:12.0.1'
+    implementation 'com.google.firebase:firebase-auth:12.0.1'
+    implementation 'com.google.firebase:firebase-core:12.0.1'
+    implementation 'com.google.firebase:firebase-crash:12.0.1'
+    implementation 'com.google.firebase:firebase-firestore:12.0.1'
     // Firebase UI's
     implementation 'com.firebaseui:firebase-ui-firestore:3.2.2'
     // Twitter SDK's
     implementation 'com.twitter.sdk.android:twitter:3.2.0'
-    implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
+    implementation 'com.twitter.sdk.android:twitter-mopub:3.2.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     // Misc
     implementation 'com.android.support:support-v4:27.1.0'
