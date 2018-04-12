@@ -22,44 +22,20 @@ import retrofit2.Call;
 
 public class TwitterService {
     private static final String TAG = TwitterService.class.getSimpleName();
-    private static TwitterService savedInstanceState;
-    private static FirestoreService firestoreService = new FirestoreService();;
-    private static FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
-    private static SharedPrefs sharedPrefs;
-    private static Call<User> call;
-
+    private FirestoreService firestoreService = new FirestoreService();;
+    private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
+    private SharedPrefs sharedPrefs;
+    private me.ayahya.aesirr.twisentials.models.User user = getCurrentUser();
     private HashMap<String, Object> followers = new HashMap<>();
     private HashMap<String, Object> friends = new HashMap<>();
-    private Result<User> userResult;
-    private me.ayahya.aesirr.twisentials.models.User User;
-
-//    public TwitterService() {
-//        firestoreService = new FirestoreService();
-//        firebaseAuthService = new FirebaseAuthService();
-//
-//        followers = new HashMap<>();
-//        friends = new HashMap<>();
-//
-//        twitterApiClient = TwitterCore.getInstance().getApiClient();
-//    }
-
-    public static TwitterService newInstance(Context context) {
-        if (savedInstanceState == null) {
-            savedInstanceState = new TwitterService();
-            sharedPrefs = SharedPrefs.newInstance(context.getApplicationContext());
-        }
-
-        return savedInstanceState;
-    }
 
     public Callback<TwitterSession> setCallback(final Activity activity) {
         return new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-//                sharedPrefs = SharedPrefs.newInstance(activity.getApplicationContext());
-                newInstance(activity);
+                sharedPrefs = SharedPrefs.newInstance(activity.getApplicationContext());
                 firebaseAuthService.handleTwitterSession(activity, result.data);
-                storeNewUser();
+                storeUser();
                 // Update Firestore
             }
 
@@ -72,32 +48,16 @@ public class TwitterService {
         };
     }
 
-    public Result<User> currentUser() {
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void success(Result<User> result) {
-                userResult = result;
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                FirebaseCrash.logcat(Log.WARN, "TwitterService:currentUser", exception.getMessage());
-            }
-        });
-
-        return userResult;
-    }
-
-    private void storeNewUser() {
-        call =  TwitterCore.getInstance()
+    private void storeUser() {
+        Log.e("TwitterService", "Calling:storeUser");
+        Call<User> call = TwitterCore.getInstance()
                 .getApiClient()
                 .getAccountService()
                 .verifyCredentials(true, true, true);
-        
+
         call.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> result) {
-                // Default is '_original' which is too small
                 String biggerAvi = result.data.profileImageUrlHttps
                         .substring(0, result.data.profileImageUrlHttps.length() - 11)
                         .concat(".jpg");
@@ -105,31 +65,9 @@ public class TwitterService {
                         .substring(0, result.data.profileBannerUrl.length())
                         .concat("/1500x500");
 
-                // This method is only used to store new users
-                // move this logic over into a method in the Firestore service
-                // note: have a onChange listener wrap over the method
-                int currentFollowerCount = result.data.followersCount;
-                // Add current follower count to hashmap
-                followers.put("count", String.valueOf(currentFollowerCount));
-
-                if (sharedPrefs.getFollowersCount() != null) {
-                    int prevFollowerCount = Integer.parseInt(sharedPrefs.getFollowersCount());
-
-                    if (prevFollowerCount < currentFollowerCount) {
-                        followers.put("color", "green");
-                    } else if (prevFollowerCount > currentFollowerCount) {
-                        followers.put("color", "red");
-                    } else {
-                        followers.put("color", "#9e9e9e");
-                    }
-                } else {
-                    followers.put("color", "#9e9e9e");
-                }
-
-                friends.put("color", "#9e9e9e");
-                friends.put("count", String.valueOf(result.data.friendsCount));
-
-                // New User
+                checkForNullKeys(result);
+                trackUserRatios(result.data.followersCount, result.data.friendsCount);
+                // Default is '_original' which is too small
                 me.ayahya.aesirr.twisentials.models.User currentUser =
                         new me.ayahya.aesirr.twisentials.models.User(
                                 biggerAvi,  biggerBanner, result.data.createdAt,
@@ -137,10 +75,10 @@ public class TwitterService {
                                 result.data.name, result.data.screenName,  result.data.idStr,
                                 followers, friends, result.data.favouritesCount);
                 sharedPrefs.setSharedPrefs(biggerAvi, biggerBanner, result.data.idStr, result.data.name,
-                        result.data.email, String.valueOf(result.data.favouritesCount), String.valueOf(result.data.followersCount),
-                        String.valueOf(result.data.friendsCount), followers.get("color").toString(), friends.get("color").toString());
-                firestoreService.newUserDocument(currentUser);
-                setCurrentUser(currentUser);
+                        result.data.email, String.valueOf(result.data.favouritesCount), sharedPrefs.getFollowersCount(),
+                        sharedPrefs.getFriendsCount(), sharedPrefs.getFollowersColor(), sharedPrefs.getFriendsColor());
+                firestoreService.pushUserDocument(currentUser);
+                setCurrentUser(user);
             }
 
             @Override
@@ -151,6 +89,50 @@ public class TwitterService {
         });
     }
 
-    private void setCurrentUser(me.ayahya.aesirr.twisentials.models.User currentUser) { this.User = currentUser; }
-    public me.ayahya.aesirr.twisentials.models.User getCurrentUser() { return this.User; }
+    public void trackUserRatios(int cFollowerCount, int cFriendCount) {
+        int pFollowerCount = Integer.parseInt(sharedPrefs.getFollowersCount()) - 100;
+        int pFriendCount = Integer.parseInt(sharedPrefs.getFriendsCount());
+
+        if (pFollowerCount < cFollowerCount) {
+            followers.put("color", "green");
+        } else if (pFollowerCount > cFollowerCount) {
+            followers.put("color", "red");
+        } else {
+            followers.put("color", "#9e9e9e");
+        }
+
+        if (pFriendCount < cFriendCount) {
+            friends.put("color", "green");
+        } else if (pFriendCount > cFriendCount) {
+            friends.put("color", "red");
+        } else {
+            friends.put("color", "#9e9e9e");
+        }
+
+        sharedPrefs.setFollowersCount(String.valueOf(cFollowerCount));
+        sharedPrefs.setFriendsCount(String.valueOf(cFriendCount));
+        sharedPrefs.setFollowersColor(followers.get("color").toString());
+        sharedPrefs.setFriendsColor(friends.get("color").toString());
+    }
+
+    private void checkForNullKeys(Result<User> result) {
+        if (!followers.containsKey("count") || !friends.containsKey("count")) {
+            followers.put("count", result.data.followersCount);
+            friends.put("count", result.data.friendsCount);
+
+            sharedPrefs.setFollowersCount(String.valueOf(result.data.followersCount));
+            sharedPrefs.setFriendsCount(String.valueOf(result.data.friendsCount));
+        }
+
+        if (!followers.containsKey("color") || !friends.containsKey("color")) {
+            followers.put("color", "#9e9e9e");
+            friends.put("color", "#9e9e9e");
+
+            sharedPrefs.setFollowersColor("#9e9e9e");
+            sharedPrefs.setFriendsColor("#9e9e9e");
+        }
+    }
+
+    private void setCurrentUser(me.ayahya.aesirr.twisentials.models.User currentUser) { this.user = currentUser; }
+    public me.ayahya.aesirr.twisentials.models.User getCurrentUser() { return this.user; }
 }

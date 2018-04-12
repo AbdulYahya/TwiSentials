@@ -6,15 +6,10 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import me.ayahya.aesirr.twisentials.R;
-import me.ayahya.aesirr.twisentials.services.FirebaseAuthService;
-import me.ayahya.aesirr.twisentials.services.FirestoreService;
 import me.ayahya.aesirr.twisentials.utils.SharedPrefs;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private FirestoreService firestoreService = new FirestoreService();
-    private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private SharedPrefs sharedPrefs;
 
     @Override
@@ -32,7 +27,6 @@ public class MainActivity extends BaseActivity {
         TextView followersCount = findViewById(R.id.followers_count);
         TextView friendsCount = findViewById(R.id.friends_count);
 
-        // Set counters into TextViews
         followersCount
                 .setTextColor(Color.parseColor(sharedPrefs.getFollowersColor()));
         friendsCount
@@ -42,29 +36,6 @@ public class MainActivity extends BaseActivity {
         friendsCount
                 .setText(sharedPrefs.getFriendsCount());
 
-            // Track counter changes & change colors respectively
-//            firestoreService.trackRatio(getApplicationContext(), followersCount);
-//            firestoreService.ratioOnChangeListener(followersCount);
-//            followersCount.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    // Set counters into TextViews
-//                    followersCount
-//                            .setTextColor(Color.parseColor(sharedPrefs.getFollowersColor()));
-//                    followersCount
-//                            .setText(sharedPrefs.getFollowersCount());
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) { }
-//            });
-//        }
     }
 
-    private void updateRatioUI() {
-
-    }
 }

@@ -55,9 +55,6 @@ public class BaseActivity extends AppCompatActivity
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
-    private TwitterApiClient twitterApiClient;
-    private AccountService accountService;
-    private Call<User> call;
     private FirebaseAuth firebaseAuth;
     private SharedPrefs sharedPrefs;
 
@@ -74,9 +71,6 @@ public class BaseActivity extends AppCompatActivity
         ButterKnife.bind(this);
         init();
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
-        twitterApiClient = TwitterCore.getInstance().getApiClient();
-        accountService = twitterApiClient.getAccountService();
-        call = accountService.verifyCredentials(true, true, true);
         sharedPrefs = SharedPrefs.newInstance(getApplicationContext());
     }
 
@@ -191,6 +185,10 @@ public class BaseActivity extends AppCompatActivity
     }
 
     private void enqueueUserData() {
+        Call<User> call = TwitterCore.getInstance()
+                .getApiClient()
+                .getAccountService()
+                .verifyCredentials(true, true, true);
         call.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> result) {

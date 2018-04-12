@@ -1,10 +1,8 @@
 package me.ayahya.aesirr.twisentials.ui;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +20,6 @@ public class AuthActivity extends AppCompatActivity {
     private TwitterService twitterService = new TwitterService();
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirebaseAuth firebaseAuth = firebaseAuthService.getFirebaseAuth();
-
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @BindView(R.id.button_twitter_login)
@@ -35,9 +32,8 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
 
-        firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
-
         authStateListener();
+        firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
         twitterLoginButton.setCallback(twitterService.setCallback(AuthActivity.this));
     }
 
@@ -58,7 +54,6 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         twitterLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
