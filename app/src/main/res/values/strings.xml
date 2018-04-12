@@ -64,4 +64,7 @@
     <string name="tools_text_account_information_email">example@google.com</string>
     <string name="title_activity_base">BaseActivity</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="your_twitter_stats">Your Twitter stats</string>
+    <string name="all_in_one_place">all in one place.</string>
+    <string name="side_bar_to_break_the_right_side_blank_space_up">Side bar to break the right side blank space up.</string>
 </resources>

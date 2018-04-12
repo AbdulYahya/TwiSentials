@@ -55,6 +55,9 @@ public class BaseActivity extends AppCompatActivity
 
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
     private FirestoreService firestoreService = new FirestoreService();
+    private TwitterApiClient twitterApiClient;
+    private AccountService accountService;
+    private Call<User> call;
     private FirebaseAuth firebaseAuth;
     private SharedPrefs sharedPrefs;
 
@@ -71,13 +74,17 @@ public class BaseActivity extends AppCompatActivity
         ButterKnife.bind(this);
         init();
         firebaseAuth = firebaseAuthService.getFirebaseAuthInstance();
+        twitterApiClient = TwitterCore.getInstance().getApiClient();
+        accountService = twitterApiClient.getAccountService();
+        call = accountService.verifyCredentials(true, true, true);
         sharedPrefs = SharedPrefs.newInstance(getApplicationContext());
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = firebaseAuthService.getFirebaseAuthInstance().getCurrentUser();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
         if (currentUser == null) {
             firebaseAuthService.completeSignout();
             Intent authIntent = new Intent(getApplicationContext(), AuthActivity.class);
@@ -85,51 +92,7 @@ public class BaseActivity extends AppCompatActivity
             startActivity(authIntent);
             finish();
         } else {
-            TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-            AccountService statusDetail = twitterApiClient.getAccountService();
-
-            Call<User> call = statusDetail.verifyCredentials(true, true, true);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void success(Result<User> result) {
-                    FirebaseFirestore fsDB = firestoreService.getFsDB();
-                    DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
-
-                    docRef.get().addOnSuccessListener(documentSnapshot -> {
-                        ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
-                        ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
-                        TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
-                        TextView userEmail = findViewById(R.id.nav_drawer_user_email);
-
-                        me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
-                                .toObject(me.ayahya.aesirr.twisentials.models.User.class);
-
-                        setSharedPrefs(user.getAviUrl(), user.getBannerUrl(), user.getTwitterId(),
-                                user.getName(), user.getEmail(), String.valueOf(user.getFavoritesCount()),
-                                String.valueOf(user.getFollowers().get("count")),
-                                String.valueOf(user.getFriends().get("count")),
-                                String.valueOf(user.getFollowers().get("color")),
-                                String.valueOf(user.getFriends().get("color")));
-
-                        Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userAvi"))
-                                .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
-                                .centerCrop()
-                                .transform(new CircleTransform())
-                                .into(userAvi);
-                        Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userBanner"))
-                                .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
-                                .centerCrop()
-                                .into(userBanner);
-                        userDisplayName.setText(sharedPrefs.getUserName());
-                        userEmail.setText(sharedPrefs.getUserEmail());
-                    });
-                }
-
-                @Override
-                public void failure(TwitterException exception) {
-                    FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
-                }
-            });
+            enqueueUserData();
         }
     }
 
@@ -216,13 +179,8 @@ public class BaseActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         setSupportActionBar(toolbar);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new TweetComposer.Builder(BaseActivity.this)
-                        .show();
-            }
-        });
+        fab.setOnClickListener(view -> new TweetComposer.Builder(BaseActivity.this)
+            .show());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -232,22 +190,49 @@ public class BaseActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void setSharedPrefs(String userAvi, String userBanner, String userId,
-                                String userName, String userEmail, String favoritesCount,
-                                String followersCount, String friendsCount,
-                                String followersColor, String friendsColor) {
-        sharedPrefs.setImagePath("userAvi", userAvi);
-        sharedPrefs.setImagePath("userBanner", userBanner);
-        sharedPrefs.setUserId(userId);
-        sharedPrefs.setUserName(userName);
-        sharedPrefs.setUserEmail(userEmail);
-        sharedPrefs.setFavoritesCount(favoritesCount);
-        sharedPrefs.setFollowersColor(followersColor);
-        sharedPrefs.setFollowersCount(followersCount);
-        sharedPrefs.setFriendsColor(friendsColor);
-        sharedPrefs.setFriendsCount(friendsCount);
-    }
+    private void enqueueUserData() {
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void success(Result<User> result) {
+                FirebaseFirestore fsDB = firestoreService.getFsDB();
+                DocumentReference docRef = fsDB.collection("users").document(result.data.idStr);
 
+                docRef.get().addOnSuccessListener(documentSnapshot -> {
+                    ImageView userAvi = findViewById(R.id.nav_drawer_user_profile_avi);
+                    ImageView userBanner = findViewById(R.id.nav_drawer_user_pic_cover);
+                    TextView userDisplayName = findViewById(R.id.nav_drawer_user_display_name);
+                    TextView userEmail = findViewById(R.id.nav_drawer_user_email);
+
+                    me.ayahya.aesirr.twisentials.models.User user = documentSnapshot
+                            .toObject(me.ayahya.aesirr.twisentials.models.User.class);
+
+                    sharedPrefs.setSharedPrefs(user.getAviUrl(), user.getBannerUrl(), user.getTwitterId(),
+                            user.getName(), user.getEmail(), String.valueOf(user.getFavoritesCount()),
+                            String.valueOf(user.getFollowers().get("count")),
+                            String.valueOf(user.getFriends().get("count")),
+                            String.valueOf(user.getFollowers().get("color")),
+                            String.valueOf(user.getFriends().get("color")));
+
+                    Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userAvi"))
+                            .resize(AVI_MAX_WIDTH, AVI_MAX_HEIGHT)
+                            .centerCrop()
+                            .transform(new CircleTransform())
+                            .into(userAvi);
+                    Picasso.with(getApplicationContext()).load(sharedPrefs.getImagePath("userBanner"))
+                            .resize(BANNER_MAX_WIDTH, BANNER_MAX_HEIGHT)
+                            .centerCrop()
+                            .into(userBanner);
+                    userDisplayName.setText(sharedPrefs.getUserName());
+                    userEmail.setText(sharedPrefs.getUserEmail());
+                });
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                FirebaseCrash.logcat(Log.ERROR, TAG + ":TwitterException:failure", exception.getMessage());
+            }
+        });
+    }
     /**
      * called in extending activities instead of setContentView...
      *

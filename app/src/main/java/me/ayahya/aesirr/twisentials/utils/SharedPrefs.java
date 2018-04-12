@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import me.ayahya.aesirr.twisentials.ui.MainActivity;
+
 public class SharedPrefs {
     private static SharedPrefs savedInstanceState;
     private static SharedPreferences sharedPreferences;
@@ -85,5 +87,21 @@ public class SharedPrefs {
         sharedPreferences.edit()
                 .putString("friendsCount", friendsCount)
                 .apply();
+    }
+
+    public void setSharedPrefs(String userAvi, String userBanner, String userId,
+                                String userName, String userEmail, String favoritesCount,
+                                String followersCount, String friendsCount,
+                                String followersColor, String friendsColor) {
+        setImagePath("userAvi", userAvi);
+        setImagePath("userBanner", userBanner);
+        setUserId(userId);
+        setUserName(userName);
+        setUserEmail(userEmail);
+        setFavoritesCount(favoritesCount);
+        setFollowersColor(followersColor);
+        setFollowersCount(followersCount);
+        setFriendsColor(friendsColor);
+        setFriendsCount(friendsCount);
     }
 }

@@ -60,23 +60,19 @@ public class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         twitterLoginButton.onActivityResult(requestCode, resultCode, data);
-        twitterLoginButton.setVisibility(View.GONE);
     }
 
     private void authStateListener() {
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuthService.getFirebaseAuth().getCurrentUser();
-                if (user != null) {
-                    String welcome = "Welcome, " + user.getDisplayName() + "!";
-                    Toast.makeText(AuthActivity.this, welcome, Toast.LENGTH_LONG)
-                            .show();
-                    Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }
+        authStateListener = firebaseAuth -> {
+            final FirebaseUser user = firebaseAuthService.getFirebaseAuth().getCurrentUser();
+            if (user != null) {
+                String welcome = "Welcome, " + user.getDisplayName() + "!";
+                Toast.makeText(AuthActivity.this, welcome, Toast.LENGTH_LONG)
+                        .show();
+                Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
         };
     }
