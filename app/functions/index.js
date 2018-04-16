@@ -38,6 +38,6 @@ exports.firestoreEmail = functions.firestore
                     };
                     return sgMail.send(msg);
                 })
-                .then(() => console.log('Email sent to: ', user.email, ' Info: ', user))
+                .then(() => console.log('Email sent to: '))
                 .catch(err => console.log(err))
     });

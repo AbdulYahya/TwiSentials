@@ -1,6 +1,7 @@
 package me.ayahya.aesirr.twisentials.services;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
@@ -18,20 +19,21 @@ import retrofit2.Call;
 
 public class TwitterService {
     private static final String TAG = TwitterService.class.getSimpleName();
-    private FirestoreService firestoreService = new FirestoreService();;
+    private FirestoreService firestoreService;
     private FirebaseAuthService firebaseAuthService = new FirebaseAuthService();
-    private SharedPrefs sharedPrefs;
-    private me.ayahya.aesirr.twisentials.models.User user = getCurrentUser();
     private HashMap<String, Object> followers = new HashMap<>();
     private HashMap<String, Object> friends = new HashMap<>();
+    private SharedPrefs sharedPrefs;
+    private me.ayahya.aesirr.twisentials.models.User user;
 
     public Callback<TwitterSession> setCallback(final Activity activity) {
         return new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 sharedPrefs = SharedPrefs.newInstance(activity.getApplicationContext());
+                setCurrentUser(user);
                 firebaseAuthService.handleTwitterSession(activity, result.data);
-                storeUser();
+                storeUser(activity.getApplicationContext());
                 // Update Firestore
             }
 
@@ -44,8 +46,8 @@ public class TwitterService {
         };
     }
 
-    private void storeUser() {
-        Log.e("TwitterService", "Calling:storeUser");
+    private void storeUser(Context context) {
+        firestoreService = new FirestoreService();
         Call<User> call = TwitterCore.getInstance()
                 .getApiClient()
                 .getAccountService()
@@ -62,7 +64,7 @@ public class TwitterService {
                         .concat("/1500x500");
 
                 checkForNullKeys(result);
-                trackUserRatios(result.data.followersCount, result.data.friendsCount);
+//                trackUserRatios(result.data.followersCount, result.data.friendsCount);
                 // Default is '_original' which is too small
                 me.ayahya.aesirr.twisentials.models.User currentUser =
                         new me.ayahya.aesirr.twisentials.models.User(
@@ -73,6 +75,7 @@ public class TwitterService {
                 sharedPrefs.setSharedPrefs(biggerAvi, biggerBanner, result.data.idStr, result.data.name,
                         result.data.email, String.valueOf(result.data.favouritesCount), sharedPrefs.getFollowersCount(),
                         sharedPrefs.getFriendsCount(), sharedPrefs.getFollowersColor(), sharedPrefs.getFriendsColor());
+                trackUserRatios(context.getApplicationContext(), currentUser);
                 firestoreService.pushUserDocument(currentUser);
                 setCurrentUser(user);
             }
@@ -85,9 +88,12 @@ public class TwitterService {
         });
     }
 
-    public void trackUserRatios(int cFollowerCount, int cFriendCount) {
-        int pFollowerCount = Integer.parseInt(sharedPrefs.getFollowersCount()) - 100;
+    public void trackUserRatios(Context context, me.ayahya.aesirr.twisentials.models.User cUser) {// int cFollowerCount, int cFriendCount) {
+        sharedPrefs = SharedPrefs.newInstance(context.getApplicationContext());
+        int pFollowerCount = Integer.parseInt(sharedPrefs.getFollowersCount());
         int pFriendCount = Integer.parseInt(sharedPrefs.getFriendsCount());
+        int cFollowerCount = Integer.parseInt(cUser.getFollowers().get("count").toString());
+        int cFriendCount = Integer.parseInt(cUser.getFriends().get("count").toString());
 
         if (pFollowerCount < cFollowerCount) {
             followers.put("color", "green");
@@ -129,6 +135,6 @@ public class TwitterService {
         }
     }
 
-    private void setCurrentUser(me.ayahya.aesirr.twisentials.models.User currentUser) { this.user = currentUser; }
+    public void setCurrentUser(me.ayahya.aesirr.twisentials.models.User currentUser) { this.user = currentUser; }
     public me.ayahya.aesirr.twisentials.models.User getCurrentUser() { return this.user; }
 }
